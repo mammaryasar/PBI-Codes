@@ -1,0 +1,39 @@
+Table:
+MTD/YTD  ID
+MTD  1
+YTD  2
+
+---
+
+Selected Period = min('MTD YTD (2)'[ID])
+
+---
+
+CY = 
+SWITCH([Selected Period],
+1, sum(actual[PL Actual CY]),
+2, CALCULATE(sum(actual[PL Actual CY]), DATESYTD(dimDate[Date].[Date]))
+)
+
+----
+
+PY = CALCULATE([CY], SAMEPERIODLASTYEAR('dimDate'[Date].[Date]))
+
+
+---
+
+BUD = 
+SWITCH([Selected Period],
+1, sum(budget[PL Budget]),
+2, CALCULATE(sum(budget[PL Budget]), DATESYTD(dimDate[Date].[Date]))
+)
+
+---
+
+CY % of sales = 
+var salesvale = calculate([CY], ALL(dimReportLayout[displayName], dimReportLayout[Sort]),dimReportLayout[displayName] = "Net Sales")
+return DIVIDE([CY],salesvale)
+
+---
+
+
